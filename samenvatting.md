@@ -147,6 +147,28 @@ bv. $_{Dno}\Im_{AVERAGE Salary}(EMPLOYEE)$
 
 # SQL
 
+Structured Query Language
+
+## Operatoren
+
+Formularium van SQL beschikbaar op examen.
+
+## Aggregaatfuncties
+
+AVG, SUM, MIN, MAX, COUNT
+
+Eerst groeperen met GROUG BY
+
+### Aanpassingen
+
+INSERT, UPDATE, DELETE
+
+## Views
+## Geneste Queries
+## Transactie
+## Permissies
+## Restricties en Triggers
+
 # Relationele Calculus
 
 # Programma's verbinden met een Database
