@@ -36,6 +36,32 @@ Niet te kennen voor examen
 
 # Relationele algebra
 ## Operatoren
+
+\begin{center}
+\begin{minipage}{0.4\textwidth}
+\includegraphics[width=\textwidth]{graphics/operatoren.png}
+\end{minipage}
+\begin{minipage}[c]{0.4\textwidth}
+\begin{center}
+\begin{tabular}{ l r }
+  Naam & Teken \\
+  \hline \\
+  Selectie & $\sigma$ \\
+  Projectie & $\pi$ \\
+  Hernoeming & $\rho, \leftarrow$\\
+  Unie & $\cup$ \\
+  Doorsnede & $\cap$ \\
+  Verschil & $-$ \\
+  Caresisch product & $\bowtie$ \\
+  Join Operator & $*$ \\
+  Deling & $\div$ \\
+\end{tabular}
+\end{center}
+\end{minipage}
+\end{center}
+
+Fundamentele operatoren {$\sigma, \pi, \cup, -, \times$}, zijn de enige nodige operatoren. De andere kunnen er op gebaseerd worden.
+
 ### Selectie
 
 $$\sigma_{\text{selectiecriterium}}(R)$$
@@ -95,7 +121,29 @@ Er zijn meerdere soorten joins
 - __Theta join__ een join waarbij de voorwaarde in de vorm is van $A \theta B$
     - Met $\theta = \{=, <, >, \leq, \geq, \not=\}$
 - __Equi-join__, $R \bowtie_{a=b} S$
-- __Natuurlijke join__, $R * S$
+- __Natuurlijke join__, $R * S$. Een join waarbij de sleutel gebruikt wodt ip een conditie.
+
+Een uitwendige join (links, rechts of volledig) is een speciale join die sowieso ieder element uit de (linker, rechter of beide) relatie, met en null als er geen paar gevonden is. Het teken hiervoor is een strikje met twee lijntjes in de richting van de join.
+
+### Deling
+
+$$T = R \div S$$
+
+Tegengestelde van het cartesisch product. 
+
+Bijvoorbeeld, voor welke zeilers bestaan reserveringen voor alle boten in een verzameling
+
+
+## Aggregaatfuncties
+
+$$_{groepering}\Im_{functies}(R)$$
+
+Functies die op een verzameling waarden uitgevoerd worden. SUM, AVERAGE, MAX, MIN, COUNT. 
+
+- Groepering is de verzameling van attributen waarop de groepering gebeurt
+- Functies is de lijst van koppels (functie, attributt)
+
+bv. $_{Dno}\Im_{AVERAGE Salary}(EMPLOYEE)$
 
 # SQL
 
