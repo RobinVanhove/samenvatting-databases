@@ -251,12 +251,79 @@ WHEN <cond>
 
 # Relationele Calculus
 
+Relationele Algebra: __Hoe__
+Relationele Calculus: __WAT__
+
+- Tupelcalculus
+- Domeincalculus
+
+Gebruik van predikatenlogica.
+
+## Queries
+
+Een query is in de vorm van {t | formule(t)} of {t.A, t.B, ... T.z | formule(t)}
+
+```
+{ t.Bdate, t.Address | EMPLOYEE(t) and t.Fname = ‘John’ and t.Lname = ‘Smith’ }
+{t | BOATS(t) and (t.color=‘red’ or t.color=‘green’)}
+```
+
+De kwantoren $\exists$ en $\forall$ zijn ook mogelijk.
+
 # Programma's verbinden met een Database
 Niet te kennen voor examen
 
-# Functionele Afhankelijkheden
+# Ontwerp van een database
 
-# Normalisatie
+1. Hoogniveau moddellering (top-down)
+    - (E)ER schema
+2. Meteen een relationeel gegevnesschema (bottom-up)
+
+Informatie bewaren, minimale redundantie ($\rightarrow$ maximale peformantie)
+
+$\rightarrow$ __normaliseren__ 
+
+## Informele richtlijnen
+
+1. De betekenis van een relatie mot gemakkelijk verklaard kunnen worden.
+    - Betekenis van een relatie moet duidleiljk zijn.
+    - Betekenis van een attribuut moet duidleiljk zijn.
+2. Redunantie en anomalieën vermijden.
+3. Vermijd de waarde 'null'.
+    - Niet van toepassing, ongekend.
+4. Vermijd dat na equi-joins onechte tupels kunnen ontstaan. Vermijd attributen met dezelfde naam in verschillende relaties (als ze geen foreing keys zijn).
+
+## Functionele Afhankelijkheden
+
+Een __functionele afhankelijkheid__ ($X \rightarrow Y$) tussen twee (verzamelingen van) attributen X en Y is een beperking op de mogelijke tupels die gevormd kunnen worden. Voor twee tupels $t_1$ en $t_2$ is het namelijk zo dat als $t_1[x] = t_2[x]$ geldt dan ook $t_1[y] = t_2[y]$ geldt.
+
+In andere woorden de waarden van de Y component van de tupel wordt bepaalt door de waarde van X. Of de waarde van de X component bepalen uniek (functioneel) de waarde van de Y component.
+
+bv.
+
+- Ssn $\rightarrow$ Ename
+- Pnumber $\rightarrow$ {Pname, Plocation}
+- {Ssn, Pnumber} $\rightarrow$ Hours
+
+
+### Afleidingsregels
+
+1. Reflexiviteitsregel $Y \subseteq X \Rightarrow X \rightarrow Y$
+2. Uitbreidingsregel $\{X \rightarrow Y \} \models XZ \rightarrow YZ$
+3. Transitiviteitsregel $\{X \rightarrow Y, Y \rightarrow Z \} \models X \rightarrow Z$
+4. Decompositieregel $\{X \rightarrow YZ \} \models X \rightarrow Y$
+5. Verenigingsregel $\{X \rightarrow Y, Y \rightarrow Z \}\models \{X \rightarrow YZ\}$
+6. Pseudo-transitviteitsregel $\{X \rightarrow Y, WY \rightarrow Z \}\models \{WX \rightarrow Z\}$
+
+$F^+$ is de verzameling die alle afleidingen die uit F volgen bevat.
+
+bv. $F = \{ SSN \rightarrow ENAME, PNUMBER \rightarrow \{ PNAME, PLOCATION \}, \{ SSN, PNUMBER \} \rightarrow HOURS\}$
+
+- { SSN $\}^+$ = { SSN, ENAME }
+- { PNUMBER $\}^+$ = { PNUMBER, PNAME, PLOCATION }
+- { SSN, PNUMBER $\}^+$ = { SSN, PNUMBER, ENAME, PNAME, PLOCATION, HOURS}
+
+## Normalisatie
 
 \part{Het Fysiek Model}
 
