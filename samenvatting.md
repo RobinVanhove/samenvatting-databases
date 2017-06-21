@@ -324,6 +324,30 @@ bv. $F = \{ SSN \rightarrow ENAME, PNUMBER \rightarrow \{ PNAME, PLOCATION \}, \
 - { SSN, PNUMBER $\}^+$ = { SSN, PNUMBER, ENAME, PNAME, PLOCATION, HOURS}
 
 ## Normalisatie
+Een __normaalvorm__ legt bepaalde eisen op aan een relatie. Normalisatie is een relatie in een bepaalde normaalvorm brengen.
+
+Elke volgende normaalvorm is een speciaal geval van de vorige.
+
+Een __super sleutel__ of super key is een aantal attributen van een tupel die uniek zijn voor de tupel. 
+
+Een __sleutel__ is een supersleutel waarvan geen attribuut verwijderd kan worden. Dus een sleutel is minimaal. Alle mogelijke sleutels zijn __kanidaat sleutels__ maar er is maar 1 __primaire sleutel__.
+
+### Eerste Normaalvorm
+
+Een relatieschema is in de eerste normaalvorm als het domein van elk atribuut is enkelvoudig (atomair).
+
+Zo kan een attribuut geen lijst zijn. Maar moet er voor ieder element van de lijst een nieuwe tupel zijn.
+
+\includegraphics[width=\textwidth]{graphics/NF1.png}
+
+### Tweede Normaalvorm
+
+
+### Derde Normaalvorm
+### Boyce-Codd Normaalvorm
+### Vierde Normaalvorm
+### Vijfde Normaalvorm
+
 
 \part{Het Fysiek Model}
 
