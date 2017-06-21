@@ -164,10 +164,90 @@ Eerst groeperen met GROUG BY
 INSERT, UPDATE, DELETE
 
 ## Views
+
+Een __view__ is een afgeleide relatie, dit wil zeggen dat de tupels niet expliciet worden opgeslagen. Implementatie op twee manieren
+
+- __Query modification__, de query wordt aangepast voor hij wordt uitgevoerd op de onderliggende tabellen.
+- __View materialization__, de afgeleide tabel (view) wordt aangemaakt en daarna wordt de query er op uitgevoerd.
+
+Aanpssingen zijn mogelijk als de view maar uit 1 tabel (basisrelatie) bestaat en een pk bevat.
+
 ## Geneste Queries
+
+Query in en Query.
+
+IN, ALL, ANY, EXISTS
+
+```
+SELECT xxxx
+FROM xxxx
+WHERE xxxx IN (
+    SELECT yyyy
+    FROM yyyy
+    WHERE yyyy
+);
+```
+
 ## Transactie
+
+Een atomaire eenheid. Standaard is iedere query een transactie. Een transactie wordt als permanente aanpssing gezien.
+
+START ... COMMIT
+
+ROLLBACK kan gebruikt worden om een huidige transactie ongedaan te maken.
+
+```
+START;
+UPDATE xxx SET xxxx WHERE xxxx;
+UPDATE xxx SET yyyy WHERE yyyy;
+COMMIT;
+```
+
+
 ## Permissies
-## Restricties en Triggers
+
+Verschillende database gebruikers kunnen ander rechten hebben.
+
+```
+GRANT right ON table TO user;
+REVOKE right ON table TO user;
+```
+
+## Restricties
+
+Een atribuut kan een primaire sleutel zijn (id). Gewoon uniek. Of een sleutel die naar een andere tabel wijst.
+```
+PRIMARY KEY <attr>
+UNIQUE <attr>
+
+FOREIGN KEY <attr> REFERENCES <table><attr>
+```
+
+Een atribuut kan een standaard waarde hebben. Zou niet 'null' mogen zijn. Of kan aan andere voorwaarde onderheven worden.
+
+```
+NOT NULL <attr>
+DEFAULT <value>
+CHECK <condition>
+```
+
+Algemene beperking opleggen met ASSERTION
+
+```
+CREATE ASSERTION <name> CHECK <cond>
+```
+
+## Triggers
+
+Event - voorwaarde - actie
+
+```
+CREATE TIGGER <name>
+{BEFORE | AFTER} <event> ON <table>
+FOR EACH ROW
+WHEN <cond>
+    <action>
+```
 
 # Relationele Calculus
 
