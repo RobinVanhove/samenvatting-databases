@@ -416,8 +416,17 @@ Een __meerwaardige afhankelijkheid__ $X \twoheadrightarrow Y$ is __triviaal__ as
 
 Een relatieschema is in de __vierde normaalvorm__ asa voer iedere niet-triviale meerwaardige afhankelijkehid van de vorm $X \twoheadrightarrow Y$ van $F^+$ geldt dat $X$ een supersleutel is.
 
+
 ### Vijfde Normaalvorm
 
+\begin{minipage}{0.5\textwidth}
+Een \textbf{join-afhankelijkheid} JD($U_1,...U_n$) in een relatie is en restrictie die aangeeft dat voor elke r van R geldt dat er een verliesloze decompositie in relaties $R_1,...,R_n (n>2)$ is met attributen $U_1,...U_n$.
+\end{minipage}
+\begin{minipage}[T]{0.4\textwidth}
+\qquad \includegraphics[width=\textwidth]{graphics/JD.png}
+\end{minipage}
+
+Een relatieschema is in de __vijfde normaalvorm__ asa voor elke niet-triviale join-afhankelijkeheid JD($U_1,...U_n$) van $F^+$ geldt dat $U_1,...U_n$ supersleutels zijn.
 
 \part{Het Fysiek Model}
 
