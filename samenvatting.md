@@ -430,14 +430,56 @@ Een relatieschema is in de __vijfde normaalvorm__ asa voor elke niet-triviale jo
 
 \part{Het Fysiek Model}
 
-# Geheugen- en Bestandsorganisatie
-
 # Indexeren
+
+Je leest of schrijft nooit 1 record van de opslaghardware, altijd in blokken. 
+
+Een blok die in het geheugen gelden wordt kan snel doorzocht worden.
+
+
+## Zoeken in bestanden
+### Zoeken in ongeordende bestanden
+In __ongeordende bestanden__ moet er __lineair__ gezocht worden. Gemiddeld wordt de helft van de records bekeken.
+
+### Zoeken in geordende bestanden
+Als de bestanden __geordend__ zijn volgens het attribuut waarop we zoeken kunnen we __binair zoeken__.Dit kan gemiddeld in $log_2(N)$ tijd.
+
+## Indexen: Definitie en soorten
+
+Een __index__ is een lijst van onderwerpen met wijzers naar het bestand. Of in andere woorden, een index is een datastructuur die toegang tot een bestand via een veld efficient maakt.
+
+Een index is een bestand zoals de data een bestand is.
+
+Er zijn drie soorten indexen, de __primaire index__ is de index op het veld dat de ordening van de bestanden bpaald en die ieder bestand uniek identificeerd (pk). De __clusterindex__ is een index op het veld dat de ordening bepaalt maar niet noodzakelijk uniek is. En een __secundaire index__ is een index op een ander verld dan dat wat der ordening bepaalt (ook niet uniek).
+
+Een index is gemakkelijk omdat het veel kleiner is om in het geheugen te laden, het moet namelijk enkel enkele records en pointers bijhouden.
+
+### Primaire indexen
+
+De primaire index bevat een fysish geordende lijst volgens de sleutel. De index bevat 1 record per blok. Dit is het _ankerrecord_ en is meestal het eerste of het laatste record van het blok.
+
+\includegraphics[width=\textwidth]{graphics/primIndex.png}
+
+### Cluster indexen
+De index is fysish geordend volgens het veld dat niet uniek is. De bestanden zijn wel geordend volgens dit veld.
+
+De index bevat per waarde van het veld 1 wijzer naar het blok waar de eerste record met die waarde in voorkomt. 
+
+### Secundaire indexen
+
+Een secundaire index is een index op en veld dat niet de ordening bepaalt. De index zelf wordt wel geordend volgens dat veld. 
+
+Als dit veld een secundair sleutel veld is kan er per waarde van de sleutel (en dus per record) een wijzer in de index staan.
+
+We hebben dichte index die alle records bevat. Dit is nog steeds nutig omdat het kleiner is dan de data zelf. (minder kollomen)
+
+### Hash indexen
+## Indexen in MySQL
+
 
 # Querryverwerking en Optimalisatie
 
+
 # Transacties
-
 # Concurrentiecontrole
-
 # Herstel
