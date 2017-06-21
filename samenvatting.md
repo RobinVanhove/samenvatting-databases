@@ -20,7 +20,7 @@ header-includes:
 
 # {-}
 
-Beknopte samenvatting voor het OPO Gegevensbanken.
+Beknopte samenvatting voor het OPO Gegevensbanken. Voornaamlijk gebaseerd op de slides, maar ook het boek.
 
 \vfill
 \hfill Versie \input{VERSION.txt}
@@ -334,18 +334,88 @@ Een __sleutel__ is een supersleutel waarvan geen attribuut verwijderd kan worden
 
 ### Eerste Normaalvorm
 
-Een relatieschema is in de eerste normaalvorm als het domein van elk atribuut is enkelvoudig (atomair).
+Een relatieschema is in de __eerste normaalvorm__ als het domein van elk atribuut is enkelvoudig (atomair).
 
 Zo kan een attribuut geen lijst zijn. Maar moet er voor ieder element van de lijst een nieuwe tupel zijn.
 
-\includegraphics[width=\textwidth]{graphics/NF1.png}
+\includegraphics[height=6cm]{graphics/NF1.png}
 
 ### Tweede Normaalvorm
 
+We spreken over een __partiele functionele afhankelijkheid__ of een __partial dependency__ als voor een afhankelijkheid $X \rightarrow Y$ geldt dat we een $X$ door $Z$ kunnen vervangen waarbij $Z \subset X$ en de afhankelijkheid $Z \rightarrow Y$ nog altijd geldig is.
+Dus als we een attribuut kunnen weglaten is het partieel functioneel afhankelijk.
+
+Anders spreken we over een __volledige functionele afhankelijkheid__.
+
+Een relatieschema is in de __tweede normaalvorm__ asa ieder niet-sleutel attribuut volledig functioneel afhankelijk is.
+
+In andere woorden voor elk niet-sleutel-attribuut moet de hele primaire sleutel nodig zijn om het te determineren.
+
+\includegraphics[height=6cm]{graphics/NF2.png}
 
 ### Derde Normaalvorm
+
+$Y$ is __trivaal functioneel afhankelijk__ van $X$ asa $Y\subseteq X$.
+
+Een functionele afhenkelijkehid $X \rightarrow Y$ is een __transitieve functionele afhankelijkheid__ asa er geen $Z$ bestaat waarbij
+
+
+\begin{minipage}{0.7\textwidth}
+
+1. Z is volledig en niet-triviaal functioneel afhankelijk van X.
+
+2. Z is geen (echte of onechte) deelverzameling van een kandidaatsleutel.
+
+3. Y is niet-triviaal functioneel afhankeklijk van Z.
+
+\end{minipage}
+\begin{minipage}{0.2\textwidth}
+\hfill
+\includegraphics[width=\textwidth]{graphics/transFuncAf.png}
+\end{minipage}
+
+Een 2NF-reltieschema is in de __derde normaalvorm__ asa voor geen enkel niet-sleutelattribuut A geldt dat A _transitief_ functioneel afhankelijk is van een kandidaatsleutel. Dus alles is _direct_ afhankelijk van een sleutel.
+
+\includegraphics[height=5cm]{graphics/NF3.png}
+
 ### Boyce-Codd Normaalvorm
+
+De __boyce-Codd Normaalvorm__ (BCNF) geldt als er voor iedere niet-triviale functionele afhankelijkheid $X \rightarrow Y$ geldt dat $X$ een supersleutel is.
+
+De BCNF haalt alle ongewenste functionele afhankelijkheden weg. Maar dit is niet steeds bereikbaar zonder andere problemen te creëren.
+
 ### Vierde Normaalvorm
+
+\begin{minipage}{0.5\textwidth}
+Een \textbf{meerwaardige afhankelijkheid} genoteerd met $X \twoheadrightarrow Y$ als er vier tupels zijn zodat 
+
+\begin{itemize}
+\item $t_1[X] = t_2[X] = t_3[X] = t_4[X]$
+\item $t_3[Y] = t_1[Y]$ en $t_4[Y] = t_2[Y]$
+\item $t_3[Z] = t_2[Z]$ en $t_4[Z] = t_1[Z]$
+\end{itemize}
+\end{minipage}
+\begin{minipage}{0.35\textwidth}
+\hfill
+\begin{tabular}[t]{ c c c c }
+    Tupel & X & Y & X \\
+    \hline
+    $t_1$ & a & $b_1$ &  $c_1$ \\
+    $t_2$ & a & $b_1$ &  $c_2$ \\
+    $t_3$ & a & $b_2$ &  $c_1$ \\
+    $t_4$ & a & $b_2$ &  $c_2$ \\
+\end{tabular}
+\end{minipage}
+
+bv. T-shirts hebben een _model_, _maat_ en _kleur_. Model $\twoheadrightarrow$ maat betkent dat:
+
+- Voor elk _model_ wordt in welbepaalde _maten_ geleverd, onafhankelijk van de _kleur_.
+- Dus elke combinatie van kleu en maat is mogelijk.
+
+Een __meerwaardige afhankelijkheid__ $X \twoheadrightarrow Y$ is __triviaal__ asa $Y \subseteq X$.
+
+Een relatieschema is in de __vierde normaalvorm__ asa voer iedere niet-triviale meerwaardige afhankelijkehid van de vorm $X \twoheadrightarrow Y$ van $F^+$ geldt dat $X$ een supersleutel is.
+
 ### Vijfde Normaalvorm
 
 
