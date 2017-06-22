@@ -52,8 +52,8 @@ Niet te kennen voor examen
   Unie & $\cup$ \\
   Doorsnede & $\cap$ \\
   Verschil & $-$ \\
-  Caresisch product & $\bowtie$ \\
-  Join Operator & $*$ \\
+  Caresisch product & $*$ \\
+  Join Operator & $\bowtie$ \\
   Deling & $\div$ \\
 \end{tabular}
 \end{center}
