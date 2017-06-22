@@ -474,11 +474,123 @@ Als dit veld een secundair sleutel veld is kan er per waarde van de sleutel (en 
 We hebben dichte index die alle records bevat. Dit is nog steeds nutig omdat het kleiner is dan de data zelf. (minder kollomen)
 
 ### Hash indexen
+
+Een hashing functie wordt gebruikt om de key meteen om te zetten naar een adres. 
+
+Collisions, botsingen mogelijk.
+
+Linear probing: open adressering of Sepereate chaining: Gesloten adressering.
+
 ## Indexen in MySQL
 
+__Clustered.__ reorders the way records in the table are physically sotred.
+
+__Nonclustered index.__ Order in index is different than physically.
 
 # Querryverwerking en Optimalisatie
 
+SQL Query wordt omgezet naar relationele algebra. Er wordt een boom opgesteld voor de query deze wordt geoptimaliseerd. 
+
+Eerst wordt de queryboom opgebouwd in canonieke vorm (dus letterlijk hoe de query is). Vervolgens wordt de boom geherstructureer zonder equivalentie te verliezen.
+
+## Transformatie regels
+
+- $\sigma$ cascade
+    - Selectie op conjuncties van condities omzetten in opeenvolgende eenvoudige selecties.
+    - $\sigma_{c_1 \text{ AND } c_2 \text{ AND } ... \text{ AND } C_n}(R) = \sigma_{c_1}(...(\sigma_{c_n}(R)))$
+- $\sigma$ is commutatief
+    - $\sigma_a(\sigma_b(R)) = \sigma_b(\sigma_a(R))$
+- $\pi$ cascade
+    - Enkel laatste projectie overhouden
+    - $\pi_a(\pi_b(R)) = \pi_a(R)$
+- Omisselen van $\sigma$ en $\pi$
+    - Enkel als de voorwaarde $c$ toepasbaar is op de atrributen
+    - $\pi_A(\sigma_c(R)) = \sigma_c(\pi_A(R))$
+- Commutativiteit van $\bowtie$ en $\times$
+    - $R \times S \equiv S \times R$
+    - $R \bowtie S \equiv S \bowtie R$
+- Omwisselen van $\sigma$ en $\bowtie$ of $\times$
+    - Als de voorwaarde $c$ toepasbaar is op de atrributen van R
+	- $\sigma_c(R \bowtie S) \equiv \sigma_c(R) \bowtie S$
+    - Als de voorwaarde $c$ toepasbaar is op de atrributen van R en S
+	- $\sigma_c(R \bowtie S) \equiv \sigma_{c_1}(R) \bowtie \sigma_{c_2}(S)$
+- Omwisselen van $\pi$ en $\times$
+    - $\pi_L (R \times S) \equiv \pi_{L(R)}(R) \times \pi_{L(S)}(S)$
+- Omwisselen van $\pi$ en $\bowtie$
+    * Als de join conditie allen attributen in L gebruikt
+	- $\pi_L (R \bowtie_c S) \equiv \pi_{L(R)}(R) \bowtie_c \pi_{L(S)}(S)$
+    - Anders R en S projecteren op join attributen + attributen projectie-lijst daarna joinen en op het einde projecteren op L.
+- $\cup$ en $\cap$ zijn commutatief
+- $\bowtie, \times, \cup$ en $\cap$ zijn associatief
+- Commutativitiet van $\sigma$ met verzamelings-operaties
+    - $\sigma_c(R \cap S) \equiv \sigma_c(R) \cap \sigma_c(S)$
+    - $\sigma_c(R \cup S) \equiv \sigma_c(R) \cup \sigma_c(S)$
+    - $\sigma_c(R / S) \equiv \sigma_c(R) / \sigma_c(S)$
+- Commutativiteti van $\pi$ met verzamelings operaties.
+    - $\pi_L(R \cup S) \equiv \pi_L(R) \cup \pi_L(S)$
+- Samenvatten van $\sigma(\times)$ in $\bowtie$
+    - $\sigma_c(R \times S) \equiv R \bowtie_c S$
+- ...
+
+## Heuristische optimalisatie
+
+1. Splits conjunctie van selecties
+2. Schuif selecties zo ver mogelijk naar beneden
+    - selectie over 1 relatie: net boven de relatie
+    - selectie over 2 relaties: zo dicht mogelijk boven hun cartesisch product
+3. Schuif kleine relaties zo ver mogelijk naar links
+    - maar houd join condities bij cartesische producten
+4. Combineer cartesisch product gevold door selectie met join conditie tot join
+5. Splits projecties op, en projecteer zo vroeg mogelijk
+    - houd alleen attributen die verder boven nodig zijn
+6. Identificeer deelbomen die door één algoritme kunnen uitgevoerd worden (zonder tijdelijke bestanden)
+
+Kleine relaties zijn letterlijk hoeveel tupels er in de relatie zijn. Dus extra informatie, de gorete van de tupels en het aantal waardes bijhouden.
+
+## Uitvoeringsplan
+
+Nadat de boom is geoptimaliseerd weten we de volgorde van de operaties en hebben we een indicatie van deelbomen waar mogleijk een algoritme voor bestaat.
+
+Maar nog geen exacte implementatie dus welke indexen, en welk soort evaluatie.
+
+\includegraphics[width=\textwidth]{graphics/uitvoeringsplan.png}
+
+## Extern Sorteren
+
+Vaak niet genoeg geheugen voor intern te sorteren bv. quicksort. Dus extern sorteren (merge sort). Dan kunnen aparte blokken om de beurt in het geheugen geladen worden.
+
+## Selectie implementeren
+
+1. Linwair zoeken
+    - kan altijd
+    - duur
+2. Binair zoeken
+    - kan als, gesorterd op veld waarop gezocht wordt
+    - cheaper
+3. Gebruik index of hash-functie
+    - Kan als er een index of hash is
+    - Bv. $\siagma_{ID=5}(USER)$
+    - Primaire index: koste het aatal blokken om de tupel in de index te vinden
+    - Hashing: meteen naar ongeveer de juiste blok (dus 1 of 2)
+4. Gebruik de Primaire index om meerder records op te halen
+    - Bv. $\siagma_{ID<5}(USER)$
+    - Kost is afhankelijk van het aantal blokken waarin de tupels zich bevinden
+5. Cluster index om meerdere records op te halen
+    - Een '=' op een attributt dat geen key is
+    - Kan als er een cluster index is op dat attribuut
+    - Kost is afhankelijk van het aantal blokken waarin de tupels zich bevinden
+6. Gebruik van een secundaire index ($B^+$ boom)
+    - voor '=' en ongelijkheden
+    - als index voor dat atribuut bestaat
+    - Kost is afhankelijk van vergelijkingsoperatie, aantal tupels, uniekheid van waarde
+7. Conjuctieve selectie c1 AND C2
+    - Als voor een constrain een van de methodes S2-S6 bruikbaar is:
+slecteer volgens ci en test andere condities voor elk gevonden record.
+    - bv $\sigma_{ID=5 \text{AND} SEX=F}(EMPLOYEE) met index op ID
+    - kost, afhankelijk van methode
+8. (Slides direct naar 9)
+9. Conjuctieve selectie door intersectie van recordpointers
+    - Kan als secundaire indexen met recordpointers bestaan voor aantal subcondities met '='
 
 # Transacties
 # Concurrentiecontrole
