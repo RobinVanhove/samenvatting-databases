@@ -710,10 +710,63 @@ Twee roosters zijn __view equivalent__ als
 - en de laatste write moet hetzelfde is
 
 ## Concurrentiecontrole
+Het is niet altijd mogelijk om een rooster te serializeren of dit te testen. Daarom worden er enkele regels (protocols) gebruikt om serializeerbaarheid te verzekeren.
+
 ### Vergrendeling (locking)
-### Tijdstempels en multiversie-technieken
+
+Een slot beperkt toegang tot een element. 
+
+Het eenvoudigste soort slot is een __binair slot__ dat meer twee toestanden heeft (wel/geen toegang).
+Bij een binair slot moet iedere transactie wachten tot het slot vrij is en het slot vrij geven als de transactie klaar is.
+
+Een __read/write lock__ of __gedeeld/exclusief slot__ heeft drie toestanden en kan lezen en schrijven apart beperken. Een transactie mag altijd lezen als er het de staat van het slot gedeeld is. Om de schrijven moet de transactie exclusieve toegang hebben.
+
+Met deze regels alleen wordt geen serialiseerbaarheid gegarandeerd. 
+
+__Twee fasen vergrendeling__ is een protocol waarbij een transactie eerst al zijn locks op vraagt voor een lock vrij te geven. Er zijn dus twee fases de expanding phase en de shrinking phase.
+
+Een __deadlock__ is een situatie waarbij twee locks op elkaar wachten waardoor niets kan gebeuren.
+
+Een variant van twee fasen vergrendeling neemt locks alvorens iets te schrijven. Dit vermijd deadlocks maar is niet altijd mogelijk. Omdat het volgende doel van een lock kan afhangen van een andere waarde.
+
+### Tijdstempels en Multiversie-technieken
+
+Ook tijdstempels (timestaps) zijn een techniek om deadlocks te voorkomen. 
+
+Een mogelijkheid is om enkel de oudste transactie te laten wachten op en lock.
+
+Men kan ook gewoon wachten niet toelaten maar de transactie afbreken als die geen lock krijgt en later herstarten.
+
+Een transactie zou ook alleen maar mogen wachten als die transactie waar op gewacht wordt niet aan het wachten is. Dit is __voorzichtig wachten__.
+
+Er kan ook een __timeout__ zijn die een transactie afbreekt als die te lang moet wachten.
+
+Een andere optie is om aan __deadlock detectie__ te doen. Hierbij worden deadlock niet voorkomen maar een van de processen wordt afgebroken als er een deadlock voordoet. Maar __starvation__ is hierbij een probleem als steeds hetzelfde proces afgebroken wordt.
+
+Men kan ook deadlocks voorkomen door geen gebruik te maken van locks en enkel van tijdstempels.
+
+Bij __multiversie__ concurrentiecontrole worden meerdere versies van een waarde bijgehouden, zo kan een oude versie nog gelezen worden.
+
 ### Optimistische concurrentiecontrole
+
+Bij optimistische concurrentiecontrole wordt de transactie op een kopie van de data uitgevoerd en later uitgevoerd als het serialiseerbaar is. Zoniet wordt de transactie gewoon herstart.
+
 ### Granulariteit van items
-### Concurrentiecontrole in SQL
+Als we spreken over het lezen, schrijven of het nemen van een lock op een item kunnen we ons afvragen over wat we juist spreken.
+
+Bij het kiezen van dit item hebben we dus een keuze we spreken over __granulaiteit__
+
+- Database (grove granulariteit)
+- bestand
+- blok
+- record
+- veld (fijne granulariteit)
+
+Hoe groter het item hoe minder mogelijk, hoe fijner het item hoe meer overhead.
+
+__Intention locks__ zijn locks die een lock op lager nivewu toelaat.
 
 ## Herstel
+### Technieken voor onmiddellijke aanpassing
+### Technieken voor uitgestelde aanpassing
+### Schaduwpaginering
