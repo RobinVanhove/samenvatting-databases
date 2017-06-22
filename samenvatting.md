@@ -458,7 +458,7 @@ Een index is gemakkelijk omdat het veel kleiner is om in het geheugen te laden, 
 
 De primaire index bevat een fysish geordende lijst volgens de sleutel. De index bevat 1 record per blok. Dit is het _ankerrecord_ en is meestal het eerste of het laatste record van het blok.
 
-\includegraphics[width=\textwidth]{graphics/primIndex.png}
+\includegraphics[height=5cm]{graphics/primIndex.png}
 
 ### Cluster indexen
 De index is fysish geordend volgens het veld dat niet uniek is. De bestanden zijn wel geordend volgens dit veld.
@@ -553,7 +553,7 @@ Nadat de boom is geoptimaliseerd weten we de volgorde van de operaties en hebben
 
 Maar nog geen exacte implementatie dus welke indexen, en welk soort evaluatie.
 
-\includegraphics[width=\textwidth]{graphics/uitvoeringsplan.png}
+\includegraphics[height=5cm]{graphics/uitvoeringsplan.png}
 
 ## Extern Sorteren
 
