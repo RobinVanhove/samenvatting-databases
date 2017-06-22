@@ -529,7 +529,7 @@ Eerst wordt de queryboom opgebouwd in canonieke vorm (dus letterlijk hoe de quer
 - Commutativiteti van $\pi$ met verzamelings operaties.
     - $\pi_L(R \cup S) \equiv \pi_L(R) \cup \pi_L(S)$
 - Samenvatten van $\sigma(\times)$ in $\bowtie$
-    - $\sigma_c(R \times S) \equiv R \bowtie_c S$
+    - $\sigma_c(R \times S) \equiv R \bowtie_c S$ 
 - ...
 
 ## Heuristische optimalisatie
@@ -569,11 +569,11 @@ Vaak niet genoeg geheugen voor intern te sorteren bv. quicksort. Dus extern sort
     - cheaper
 3. Gebruik index of hash-functie
     - Kan als er een index of hash is
-    - Bv. $\siagma_{ID=5}(USER)$
+    - Bv. $\sigma_{ID=5}(USER)$
     - Primaire index: koste het aatal blokken om de tupel in de index te vinden
     - Hashing: meteen naar ongeveer de juiste blok (dus 1 of 2)
 4. Gebruik de Primaire index om meerder records op te halen
-    - Bv. $\siagma_{ID<5}(USER)$
+    - Bv. $\sigma_{ID<5}(USER)$
     - Kost is afhankelijk van het aantal blokken waarin de tupels zich bevinden
 5. Cluster index om meerdere records op te halen
     - Een '=' op een attributt dat geen key is
@@ -586,12 +586,134 @@ Vaak niet genoeg geheugen voor intern te sorteren bv. quicksort. Dus extern sort
 7. Conjuctieve selectie c1 AND C2
     - Als voor een constrain een van de methodes S2-S6 bruikbaar is:
 slecteer volgens ci en test andere condities voor elk gevonden record.
-    - bv $\sigma_{ID=5 \text{AND} SEX=F}(EMPLOYEE) met index op ID
+    - bv $\sigma_{ID=5 \text{ AND } SEX=F}(EMPLOYEE_{})$ met index op ID
     - kost, afhankelijk van methode
 8. (Slides direct naar 9)
 9. Conjuctieve selectie door intersectie van recordpointers
     - Kan als secundaire indexen met recordpointers bestaan voor aantal subcondities met '='
 
-# Transacties
-# Concurrentiecontrole
-# Herstel
+
+# Concurrentie
+Als er meerdere applicaties querys teglijk uitvoeren moet meer er voor zorgen dat de database nog wel aan een aantal constraints voldoet.
+
+Zo kan 1 plaats op een vliegtuig maar door 1 persoon geboekt worden. Als er meerde mensen tegelijk de laatste plaats boeken mag maar 1 van hen die krijgen.
+
+Om dit te bereiken groeperen we onze queries in transacties. Deze kunnen __interleaved__ uitgevoerd worden, dit zil weggen afzisselend door 1 processor. Of __simultaan__ dan werken meerdere processoren in parallel. We bekijken enkel het interleaved model.
+
+## Mogelijke problemen
+### Tijdelijke aanpassing (dirty read)
+
+Een programma maakt een aanpassing maar wordt door een fout afgebroken. De gewijzigde waarde wordt herstelt maar een ander pogramma heeft deze tijdleijke waarde al gelezen.
+
+### Foutieve sommering
+
+Een aggregaatfunctie kan bv. een som berekenen. Als de waarde tegelijk wordt aangepast kan dit fouten opleveren.
+
+### Niet herhaalbare lezing
+
+Een relatie wordt twee keer kort na elkaar gelezen maar geeft een ander resultaat.
+
+bv. Check of er plaats is, ja. Maak een reservatie, plaats al bezet.
+
+### Oorzaaken
+
+1. computer-crash
+    - inhoud van geheugen kan verloren zijn
+2. transactie- of systeemfout
+    - verkeerde parameter, overflow, deling door 0, logische programmeerfout,..
+3. uitzonderingscondities
+    - bv. bestand kan niet gelezen worden, ...
+4. opgelegd door concurrentiecontrole
+    - bv. transactie afgebroken wegens deadlock
+5. schijf-fout
+    - bv. beschadigd spoor
+6. fysieke problemen, catastrofes
+    - brand, stroomonderbreking, ...
+
+Bij falingen van de types 1 tot 4 moet de oorspronkelijke toestand hersteld kunnen worden (bij 5-6 ook, maar dit werkt met backups)
+
+
+## Transacties
+
+Een __transactie__ is een uitvoering van een programma dat de gegevensbank raadpleegt of wijzigt. Een transactie wordt ofwel helemaal uitgevoerd ofwel helemaal niet, dit om fouten te voorkomen.
+
+Na een fout waarbij de transactie niet uitgevoerd kan worden moet de oorsprongkelijke toestand herstald worden.
+
+Een __read-only__ transactie leest enkel uit de database. Terwijl een __update__ transactie gegevens aanpast.
+
+Als en transactie correct is gebeurt wordt de transactie gecommit men spreekt dan over een __commit point__.
+
+### Operaties
+
+Een transactie bestaat uit enkele operaties.
+
+- BEGIN_TRANSACTION
+- READ / WRITE
+- END_TRANSACTION
+- COMMIT_TRANSACTION
+
+In het geval dat er een fout gebeurt zijn er extra bewerkingen.
+
+- ROLLBACK (ABORT)
+- UNDO
+    - 1 bewerking wordt ongedaan gemaakt
+- REDO
+    - 1 bewerking wordt opneieuw uitgevoerd.
+
+### Systeemlog
+
+In de systeemlog worden alle transacties (die de database wijzigen) bijgehouden. Dit is nodig om de database te kunnen herstellen. De volgende gegevens worden bijgehouden (T is een transactie ID)
+
+- [ start_transaction, T ]
+- [ write_item, T, X, oude waarde, nieuwe waarde ]
+- [ read_item, T, X ]
+- [ commit, T ]
+- [ abort, T ]
+
+### Gewenste eigenschappen van transacties
+
+__ACID properties__
+
+- Atomicity (ondeelbaarheid)
+- Consistency preservation 
+- Isolation
+    - Effect moet zijn alsof het de enige uitgevoerd transactie is.
+- Durability
+
+## Transactierooster (schedules)
+
+- Conflict als 2 operaties
+    - bij verschillende transaties horen
+    - en hetzelfde gegevenselement gebruiken
+    - en minsten 1 van hen een write is
+
+Een rooster is __volledig__ als alle operaties van de transacties er in voorkomen, in de juiste volgorden. En voor elk paar conflicterende operaties geldt dat de volgorde eenduidig vatligt.
+
+Een rooster is __herstelbaar__ asa elke transactie die gecommit is nooit meer ongedaan gemaakt moet worden. Herstelbaar betekend niet eenvoudig __cascading rollback__ is mogelijk. Hierbij moet na het terugrollen van een transactie een andere ook teruggerolt worden (omdat deze iets las dat door de andere werd aangepast).
+
+__Cascadeloze rooster__ zijn roosters die garanderen dat cascading rollback niet nodig zijn. Een manier om dit te doen is er voor zogen dat een transactie past waarden leest die al gecommit zijn. Maar dit zorgt ervoor dat minder transacties gelijktijdig uitgevoerd kunnen worden.
+
+In een __strikt rooster__ wordt een waarde pas gelezen of geschreven nadat die gecommit is. 
+
+Een cascadeloos rooster impliceert een herstelbaar rooster en een strikt rooster impliceert een cascadeloos rooster.
+
+### Serialiseren van roosters
+
+In een __serieel rooster__ worden de operaties van iedere transactie na elkaar uitgevoerd, er worden dus geen transacties door elkaar uitgevoerd.
+
+Een rooster is serializeerbaar asa het equivalent is met een serieel rooster met dezelfde transacties.
+Er zijn twee soorten equivalentie __resultaat-equivalentie__ is dat twee roosters met dezelfde beginwaarden hetzelfde resultaat geven. Twee rooosters zijn __conflict-equivalent__ asa de volgorde van de conflicten dezelfde is.
+
+Twee roosters zijn __view equivalent__ als
+
+- de laatste write voor een read moet in beide roosters dezelfde zijn
+- en de laatste write moet hetzelfde is
+
+## Concurrentiecontrole
+### Vergrendeling (locking)
+### Tijdstempels en multiversie-technieken
+### Optimistische concurrentiecontrole
+### Granulariteit van items
+### Concurrentiecontrole in SQL
+
+## Herstel
