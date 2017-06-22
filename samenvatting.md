@@ -53,7 +53,7 @@ Niet te kennen voor examen
   Doorsnede & $\cap$ \\
   Verschil & $-$ \\
   Caresisch product & $\bowtie$ \\
-  Join Operator & $*$ \\
+  Join Operator & $ * $ \\
   Deling & $\div$ \\
 \end{tabular}
 \end{center}
@@ -767,6 +767,26 @@ Hoe groter het item hoe minder mogelijk, hoe fijner het item hoe meer overhead.
 __Intention locks__ zijn locks die een lock op lager nivewu toelaat.
 
 ## Herstel
+Ieder DBMS maakt gebruik van een __cache__ om de queries te versnellen.
+
+Bij __write ahead logging__ wordt eerst naar de log geschreven (op de schijf) voor de aanpassing doorgevoerd wordt.
+
+Een __checkpoint__ in een systeemlog is een punt waarop alle wijzigingen naar de schijf geschreven zijn.
+
+Bij __onmiddelijke aanpssingen__ worden de aanpassingen aangebracht voor het bereiken van een commit point. Bij het falen is dan een rollback nodig.
+
+__Uitgestelde aanpassingen__ gebeuren pas als een commit point bereikt is.
+
 ### Technieken voor onmiddellijke aanpassing
+
+Bij onmiddelijke aanpassing is het naast de log ook nog nodig om twee lijsten bij te houden. Een met transacties die gecommit zijn na het laatste checkpoint en een met transacties die nu bezig zijn.
+
 ### Technieken voor uitgestelde aanpassing
+
+Een transactie kan de gegevensbank niet wijzigen vóór het bereiken van haar commit point. En een transactie bereikt haar commit point niet vooraleer alle aanpassingsopdrachten geregistreerd zijn in de log (en de log geschreven is naar schijf) Dus en undo is nooit nodig.
+
+Enkel redo's.
+
 ### Schaduwpaginering
+
+Bij __shaduwpaginering__ wordt er voor iedere transactie een kopie gemaakt van de oorsprongkelijke blok. Na eem commit kan deze shaduwpagina verwijdert worden. 
